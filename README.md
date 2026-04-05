@@ -35,6 +35,7 @@ A RESTful API built with Laravel to manage and track job applications in a struc
 - `POST /api/applications`
 - `GET /api/applications/{id}`
 - `PUT /api/applications/{id}`
+- `PATCH /api/applications/{id}`
 - `DELETE /api/applications/{id}`
 
 ### 📊 Stats
@@ -56,10 +57,10 @@ A RESTful API built with Laravel to manage and track job applications in a struc
   "notes": "First application",
   "applied_at": "2026-04-05"
 }
-```bash
 
 ⚙️ Installation
 
+```bash
 git clone https://github.com/ericcobasdev/careertrack-api.git
 cd careertrack-api
 
