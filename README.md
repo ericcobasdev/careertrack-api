@@ -17,8 +17,8 @@ A RESTful API built with Laravel to manage and track job applications in a struc
 
 ## 🛠️ Tech Stack
 
-- Laravel 13
-- PHP 8+
+- Laravel 13.3.0
+- PHP 8.3
 - SQLite (development)
 - Laravel Sanctum
 
