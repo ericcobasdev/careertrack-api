@@ -42,7 +42,7 @@ class JobApplication extends Model
     {
         return $query
             ->when($filters['status'] ?? null, fn ($q, $status) => $q->where('status', $status))
-            ->when($filters['company'] ?? null, fn ($q, $company) => $q->where('company_name', 'like', "%{$company}%"))
+            ->when($filters['company'] ?? null, fn ($q, $company) => $q->where('company_name', 'like', '%'.addcslashes($company, '%_\\').'%'))
             ->when($filters['from'] ?? null, fn ($q, $from) => $q->whereDate('applied_at', '>=', $from))
             ->when($filters['to'] ?? null, fn ($q, $to) => $q->whereDate('applied_at', '<=', $to));
     }
