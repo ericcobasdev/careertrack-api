@@ -3,48 +3,47 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\IndexJobApplicationRequest;
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Http\Requests\UpdateJobApplicationRequest;
 use App\Http\Resources\JobApplicationResource;
 use App\Models\JobApplication;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 class JobApplicationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): AnonymousResourceCollection
+    public function index(IndexJobApplicationRequest $request): AnonymousResourceCollection
     {
-        $jobApplications = JobApplication::latest()->get();
+        $jobApplications = $request->user()
+            ->jobApplications()
+            ->filter($request->filters())
+            ->orderBy($request->sortBy(), $request->sortDirection())
+            ->paginate($request->perPage())
+            ->withQueryString();
 
         return JobApplicationResource::collection($jobApplications);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreJobApplicationRequest $request): JobApplicationResource
+    public function store(StoreJobApplicationRequest $request): JsonResponse
     {
         $jobApplication = $request->user()->jobApplications()->create(
             $request->validated()
         );
 
-        return new JobApplicationResource($jobApplication);
+        return (new JobApplicationResource($jobApplication))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(JobApplication $jobApplication): JobApplicationResource
     {
+        $this->authorize('view', $jobApplication);
+
         return new JobApplicationResource($jobApplication);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateJobApplicationRequest $request, JobApplication $jobApplication): JobApplicationResource
     {
         $jobApplication->update($request->validated());
@@ -52,11 +51,10 @@ class JobApplicationController extends Controller
         return new JobApplicationResource($jobApplication);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(JobApplication $jobApplication): Response
     {
+        $this->authorize('delete', $jobApplication);
+
         $jobApplication->delete();
 
         return response()->noContent();
