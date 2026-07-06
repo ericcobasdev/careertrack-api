@@ -44,3 +44,6 @@ jobs:
 
       - name: Run Laravel Pint
         run: vendor/bin/pint --test
+
+      - name: Run static analysis
+        run: composer analyse
