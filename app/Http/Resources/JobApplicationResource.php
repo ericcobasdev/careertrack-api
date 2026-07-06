@@ -2,9 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin JobApplication
+ */
 class JobApplicationResource extends JsonResource
 {
     /**
@@ -18,7 +22,7 @@ class JobApplicationResource extends JsonResource
             'id' => $this->id,
             'company_name' => $this->company_name,
             'position_title' => $this->position_title,
-            'status' => $this->status?->value,
+            'status' => $this->status->value,
             'source' => $this->source,
             'source_url' => $this->source_url,
             'salary_min' => $this->salary_min,

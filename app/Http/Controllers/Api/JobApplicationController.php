@@ -16,8 +16,8 @@ class JobApplicationController extends Controller
 {
     public function index(IndexJobApplicationRequest $request): AnonymousResourceCollection
     {
-        $jobApplications = $request->user()
-            ->jobApplications()
+        $jobApplications = JobApplication::query()
+            ->whereBelongsTo($request->user())
             ->filter($request->filters())
             ->orderBy($request->sortBy(), $request->sortDirection())
             ->paginate($request->perPage())
