@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+
+metadata:
+  name: careertrack-mysql
+  namespace: careertrack
+
+spec:
+  serviceName: careertrack-mysql
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: careertrack-mysql
+
+  template:
+    metadata:
+      labels:
+        app: careertrack-mysql
+
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.4
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: mysql
+              containerPort: 3306
+
+          envFrom:
+            - secretRef:
+                name: careertrack-mysql-secret
+
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-data
+
+      spec:
+        accessModes:
+          - ReadWriteOnce
+
+        storageClassName: hostpath
+
+        resources:
+          requests:
+            storage: 5Gi

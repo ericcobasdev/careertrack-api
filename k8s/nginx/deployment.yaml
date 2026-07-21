@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: careertrack-nginx
+  namespace: careertrack
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: careertrack-nginx
+
+  template:
+    metadata:
+      labels:
+        app: careertrack-nginx
+
+    spec:
+      containers:
+        - name: nginx
+          image: careertrack-api-nginx:latest
+          imagePullPolicy: Never
+
+          ports:
+            - containerPort: 80
+              name: http

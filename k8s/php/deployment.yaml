@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: careertrack-php
+  namespace: careertrack
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: careertrack-php
+
+  template:
+    metadata:
+      labels:
+        app: careertrack-php
+
+    spec:
+      containers:
+        - name: php-fpm
+          image: careertrack-api-app:latest
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: careertrack-php-config
+            - secretRef:
+                name: careertrack-php-secret
+                
+          ports:
+            - name: fastcgi
+              containerPort: 9000

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: careertrack-nginx
+  namespace: careertrack
+
+spec:
+  selector:
+    app: careertrack-nginx
+
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+
+  type: ClusterIP

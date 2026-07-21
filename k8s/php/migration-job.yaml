@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: careertrack-migrate
+  namespace: careertrack
+
+spec:
+  backoffLimit: 3
+
+  template:
+    metadata:
+      labels:
+        app: careertrack-migrate
+
+    spec:
+      restartPolicy: Never
+
+      containers:
+        - name: migrate
+          image: careertrack-api-app:latest
+          imagePullPolicy: Never
+
+          command:
+            - php
+            - artisan
+            - migrate
+            - --force
+
+          envFrom:
+            - configMapRef:
+                name: careertrack-php-config
+
+            - secretRef:
+                name: careertrack-php-secret

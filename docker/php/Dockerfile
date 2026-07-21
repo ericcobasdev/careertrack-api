@@ -22,14 +22,29 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+COPY composer.json composer.lock ./
+
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-scripts
+
+COPY . .
+
 RUN groupmod -g ${GID} www-data \
     && usermod -u ${UID} -g ${GID} www-data \
     && mkdir -p /var/www/.composer \
     && chown -R www-data:www-data /var/www/.composer \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R ug+rwx storage bootstrap/cache \
     && git config --system --add safe.directory /var/www/html
 
 ENV COMPOSER_HOME=/var/www/.composer
 
 USER www-data
+
+RUN composer run-script post-autoload-dump
 
 CMD ["php-fpm"]

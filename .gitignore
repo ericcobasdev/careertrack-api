@@ -30,4 +30,7 @@ Thumbs.db
 /storage/logs/*
 /bootstrap/cache/*
 database/*.sqlite
+# Local Kubernetes secrets
+k8s/php/secret.yaml
+k8s/mysql/secret.yaml
 !.gitignore
