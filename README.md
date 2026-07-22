@@ -468,21 +468,22 @@ The following diagram illustrates how an external HTTP request reaches the Larav
 ```mermaid
 flowchart LR
 
-Client
+Client["🌐 Client"]
+Ingress["NGINX Ingress"]
+NginxSvc["NGINX Service"]
+Nginx["NGINX Pod"]
+PhpSvc["PHP Service"]
+Laravel["Laravel PHP Pod"]
+MysqlSvc["MySQL Service"]
+Mysql["MySQL StatefulSet"]
 
---> Ingress
-
---> NGINX Service
-
---> NGINX Pod
-
---> PHP Service
-
---> Laravel Pod
-
---> MySQL Service
-
---> MySQL StatefulSet
+Client --> Ingress
+Ingress --> NginxSvc
+NginxSvc --> Nginx
+Nginx --> PhpSvc
+PhpSvc --> Laravel
+Laravel --> MysqlSvc
+MysqlSvc --> Mysql
 ```
 
 The infrastructure keeps networking, application execution and persistence separated into dedicated Kubernetes resources.
